@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mpudule Early Learning Centre</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { scroll-behavior: smooth; }
+    body { font-family: 'Nunito', sans-serif; overflow-x: hidden; background-color: #f8fafc; }
+    h1, h2, .serif { font-family: 'Playfair Display', serif; }
+
+    /* ── Aesthetics & Background Art ── */
+    .blob-bg { position: absolute; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.4; animation: float 18s ease-in-out infinite alternate; }
+    @keyframes float { 0% { transform: translate(0,0) scale(1) rotate(0deg); } 100% { transform: translate(60px,-60px) scale(1.15) rotate(15deg); } }
+
+    .floating-icon { position: absolute; opacity: 0.08; z-index: 1; animation: iconFloat 25s linear infinite; }
+    @keyframes iconFloat {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-30px) rotate(10deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    nav { backdrop-filter: blur(16px); }
+    .hero-wave { position: absolute; bottom: -2px; left: 0; width: 100%; height: 100px; }
+
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity .8s cubic-bezier(0.4, 0, 0.2, 1), transform .8s cubic-bezier(0.4, 0, 0.2, 1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .card-hover { transition: all .4s cubic-bezier(0.4, 0, 0.2, 1); }
+    .card-hover:hover { transform: translateY(-12px) scale(1.02); box-shadow: 0 30px 60px -12px rgba(6, 78, 59, 0.15); }
+
+    .grad-text {
+      background: linear-gradient(135deg, #059669, #10b981, #3b82f6);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .pulse-dot { animation: pdot 2.5s infinite; }
+    @keyframes pdot {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+      50% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
+    }
+
+    .zigzag {
+      background: linear-gradient(135deg, #ecfdf5 25%, transparent 25%) -10px 0,
+                  linear-gradient(225deg, #ecfdf5 25%, transparent 25%) -10px 0,
+                  linear-gradient(315deg, #ecfdf5 25%, transparent 25%),
+                  linear-gradient(45deg, #ecfdf5 25%, transparent 25%);
+      background-size: 24px 24px; background-color: #fff; height: 24px; width: 100%;
+    }
+
+    .form-input:focus { outline: none; border-color: #10b981; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15); }
+
+    #scrollTop { transition: all .4s ease; border: 2px solid rgba(255,255,255,0.2); }
+    #scrollTop.hidden-btn { opacity: 0; pointer-events: none; transform: translateY(20px) scale(0.8); }
+
+    #mobileMenu { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+    .sparkle-svg { animation: spin 10s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .hero-pattern {
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 86c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm66-3c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm-46-45c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm26 18c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm16 18c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM9 69c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm34-44c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-4-8c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm0 72c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm52-4c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-8-16c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-20-46c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM31 26c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-8 48c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-14-16c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm75-26c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-5-13c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm11 44c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-12 18c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm23-48c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+    }
+
+    .art-pattern {
+      background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2310b981' fill-opacity='0.04' fill-rule='evenodd'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3Ccircle cx='90' cy='90' r='2'/%3E%3Cpath d='M60 10l2 2-2 2-2-2zM10 60l2 2-2 2-2-2zM110 60l2 2-2 2-2-2zM60 110l2 2-2 2-2-2z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .doodle-bg {
+      background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30c5 0 10 5 10 10s-5 10-10 10-10-5-10-10 5-10 10-10z' fill='%233b82f6' fill-opacity='0.03'/%3E%3Cpath d='M150 150c10 0 20 10 20 20s-10 20-20 20-20-10-20-20 10-20 20-20z' fill='%2310b981' fill-opacity='0.03'/%3E%3Cpath d='M100 20l5 15h15l-12 10 5 15-13-10-13 10 5-15-12-10h15z' fill='%23f59e0b' fill-opacity='0.02'/%3E%3C/svg%3E");
+    }
+
+    .watercolor-emerald {
+      background: radial-gradient(circle at 20% 30%, rgba(16, 185, 129, 0.05) 0%, transparent 40%),
+                  radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.05) 0%, transparent 40%);
+    }
+
+    .sprinkles {
+      background-image: radial-gradient(#10b981 10%, transparent 10%), radial-gradient(#3b82f6 10%, transparent 10%);
+      background-size: 80px 80px;
+      background-position: 0 0, 40px 40px;
+      opacity: 0.03;
+      position: absolute; inset: 0; pointer-events: none;
+    }
+
+    .tag-pill { display:inline-block; padding:4px 14px; border-radius:999px; font-size:.7rem; font-weight:800; letter-spacing:.08em; text-transform: uppercase; }
+    #progress { position:fixed; top:0; left:0; height:4px; background:linear-gradient(90deg,#10b981,#22c55e,#3b82f6); z-index:9999; transition:width .3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+    .img-zoom { overflow: hidden; border-radius: 1.5rem; }
+    .img-zoom img { transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+    .img-zoom:hover img { transform: scale(1.1); }
+
+    .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+    .glass-dark { background: rgba(6, 78, 59, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 5px; border: 2px solid #f1f5f9; }
+    ::-webkit-scrollbar-thumb:hover { background: #059669; }
+  </style>
+</head>
+<body class="text-slate-800 leading-relaxed">
+
+<div id="progress" style="width:0%"></div>
+
+<!-- ══════════════════ NAVIGATION ══════════════════ -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-white/80 border-b border-emerald-50 shadow-sm transition-all duration-500">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-20">
+
+    <a href="#home" class="flex items-center gap-3 group">
+      <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 to-green-500 flex items-center justify-center shadow-lg group-hover:rotate-12 transition-all duration-500">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3L14.5 8.5L20.5 9.3L16.3 13.4L17.3 19.4L12 16.6L6.7 19.4L7.7 13.4L3.5 9.3L9.5 8.5L12 3Z" fill="white" stroke="white" stroke-width="1" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <span class="font-black text-emerald-700 text-lg leading-tight block tracking-tight">Mpudule</span>
+        <span class="text-[10px] text-emerald-600/70 font-bold leading-tight block uppercase tracking-widest">Early Learning Centre</span>
+      </div>
+    </a>
+
+    <div class="hidden md:flex items-center gap-2">
+      <a href="#home"       class="nav-link px-4 py-2 rounded-xl text-sm font-800 text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50 transition-all">Home</a>
+      <a href="#about"      class="nav-link px-4 py-2 rounded-xl text-sm font-800 text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50 transition-all">About</a>
+      <a href="#governance" class="nav-link px-4 py-2 rounded-xl text-sm font-800 text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50 transition-all">Governance</a>
+      <a href="#programs"   class="nav-link px-4 py-2 rounded-xl text-sm font-800 text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50 transition-all">Programs</a>
+      <a href="#admissions" class="nav-link px-4 py-2 rounded-xl text-sm font-800 text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50 transition-all">Admissions</a>
+      <a href="#contact"    class="ml-4 px-6 py-2.5 rounded-2xl text-sm font-900 bg-emerald-600 text-white shadow-lg shadow-emerald-600/20 hover:shadow-emerald-600/40 hover:-translate-y-0.5 transition-all">Contact Us</a>
+    </div>
+
+    <button id="hamburger" class="md:hidden p-3 rounded-2xl text-emerald-700 hover:bg-emerald-50 transition-colors" aria-label="Menu">
+      <svg id="iconOpen"  class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <svg id="iconClose" class="w-7 h-7 hidden" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <div id="mobileMenu" class="md:hidden overflow-hidden max-h-0 opacity-0 bg-white border-t border-emerald-50">
+    <div class="px-6 py-8 flex flex-col gap-3">
+      <a href="#home"       class="mob-link py-3 px-5 rounded-2xl text-slate-700 font-800 hover:bg-emerald-50 hover:text-emerald-700 transition-all">Home</a>
+      <a href="#about"      class="mob-link py-3 px-5 rounded-2xl text-slate-700 font-800 hover:bg-emerald-50 hover:text-emerald-700 transition-all">About</a>
+      <a href="#governance" class="mob-link py-3 px-5 rounded-2xl text-slate-700 font-800 hover:bg-emerald-50 hover:text-emerald-700 transition-all">Governance</a>
+      <a href="#programs"   class="mob-link py-3 px-5 rounded-2xl text-slate-700 font-800 hover:bg-emerald-50 hover:text-emerald-700 transition-all">Programs</a>
+      <a href="#admissions" class="mob-link py-3 px-5 rounded-2xl text-slate-700 font-800 hover:bg-emerald-50 hover:text-emerald-700 transition-all">Admissions</a>
+      <a href="#contact"    class="py-4 px-5 rounded-2xl text-center font-900 bg-emerald-600 text-white shadow-xl shadow-emerald-600/20">Contact Us</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden hero-pattern"
+         style="background: linear-gradient(135deg, #064e3b 0%, #065f46 40%, #1e3a5f 100%);">
+
+  <div class="blob-bg" aria-hidden="true">
+    <div class="blob w-[500px] h-[500px] bg-emerald-500/30"  style="top:-100px; left:-100px; animation-delay:0s;"></div>
+    <div class="blob w-[400px] h-[400px] bg-blue-500/20" style="top:20%; right:-100px; animation-delay:3s;"></div>
+    <div class="blob w-[450px] h-[450px] bg-green-400/25" style="bottom:10%; left:25%; animation-delay:6s;"></div>
+    <div class="blob w-[350px] h-[350px] bg-teal-400/20"   style="bottom:-80px; right:15%; animation-delay:2s;"></div>
+  </div>
+
+  <!-- Floating Background Art Icons -->
+  <svg class="floating-icon w-16 h-16 text-white" style="top: 20%; left: 10%; animation-duration: 30s;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+  <svg class="floating-icon w-20 h-20 text-white" style="top: 60%; right: 10%; animation-duration: 40s;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+  <svg class="floating-icon w-12 h-12 text-white" style="bottom: 15%; left: 20%; animation-duration: 35s;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+
+  <div class="relative z-10 text-center text-white px-6 max-w-5xl mx-auto pt-28">
+    <div class="reveal inline-flex items-center gap-3 glass-dark border border-white/20 rounded-full px-6 py-2.5 mb-8 text-xs font-900 uppercase tracking-[0.2em]">
+      <span class="flex h-2 w-2 relative">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+      </span>
+      Soweto, Johannesburg
+    </div>
+
+    <h1 class="reveal text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[1.1] mb-8 drop-shadow-2xl tracking-tighter">
+      Nurturing Young Minds,<br/>
+      <span class="relative inline-block text-emerald-400">
+        Building Strong
+        <svg class="absolute -bottom-4 left-0 w-full opacity-60" height="12" viewBox="0 0 300 12" fill="none" preserveAspectRatio="none">
+          <path d="M0 6 Q75 0 150 6 Q225 12 300 6" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"/>
+        </svg>
+      </span>
+      Foundations.
+    </h1>
+
+    <p class="reveal text-lg sm:text-xl md:text-2xl font-800 text-emerald-100/90 mb-6 tracking-wide max-w-3xl mx-auto">
+      Welcome to Mpudule Early Learning Centre — Where world-class learning meets the heart of the community.
+    </p>
+
+    <div class="reveal flex flex-col sm:flex-row gap-5 justify-center mt-12">
+      <a href="#programs" class="group px-10 py-5 rounded-3xl bg-emerald-500 text-white font-900 shadow-2xl shadow-emerald-500/40 hover:bg-emerald-400 hover:-translate-y-1 transition-all text-lg flex items-center justify-center gap-3">
+        Explore Programs
+        <svg class="w-6 h-6 group-hover:translate-x-1.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5-5 5M6 12h12"/></svg>
+      </a>
+      <a href="#admissions" class="px-10 py-5 rounded-3xl border-2 border-white/30 glass-dark hover:border-white/60 hover:bg-white/10 transition-all text-lg font-900">
+        Enroll Now
+      </a>
+    </div>
+
+    <div class="reveal mt-20 grid grid-cols-3 gap-6 sm:gap-12 max-w-2xl mx-auto pt-10 border-t border-white/10">
+      <div class="text-center">
+        <div class="text-4xl font-black text-emerald-400">03</div>
+        <div class="text-[10px] text-white/50 font-900 uppercase tracking-widest mt-2">Age Groups</div>
+      </div>
+      <div class="text-center border-x border-white/10">
+        <div class="text-4xl font-black text-emerald-400">100%</div>
+        <div class="text-[10px] text-white/50 font-900 uppercase tracking-widest mt-2">Safe Space</div>
+      </div>
+      <div class="text-center">
+        <div class="text-4xl font-black text-emerald-400">HD</div>
+        <div class="text-[10px] text-white/50 font-900 uppercase tracking-widest mt-2">Excellence</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-wave">
+    <svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,60 C240,100 480,100 720,60 C960,20 1200,20 1440,60 L1440,100 L0,100 Z" fill="#ffffff"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ══════════ CORE PILLARS ══════════ -->
+<section class="bg-white py-20 relative art-pattern watercolor-emerald">
+  <div class="sprinkles"></div>
+  <!-- Extra Doodles -->
+  <svg class="absolute top-10 right-[15%] w-16 h-16 text-emerald-500 opacity-10 animate-bounce-slow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+  <svg class="absolute bottom-10 left-[10%] w-24 h-12 text-blue-400 opacity-10" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 19c-3.037 0-5.5-2.463-5.5-5.5 0-.156.02-.31.056-.459C10.047 12.532 8 10.5 8 8c0-2.485 2.015-4.5 4.5-4.5.15 0 .298.008.441.024C13.882 1.83 15.787 1 18 1c3.866 0 7 3.134 7 7 0 1.57-.518 3.017-1.4 4.184C24.482 13.017 25 14.43 25 16c0 3.866-3.134 7-7 7-.17 0-.337-.006-.503-.018C16.518 24.164 14.39 25 12 25c-4.418 0-8-3.582-8-8 0-1.897.662-3.642 1.77-5.016C4.77 11.017 4 9.593 4 8c0-3.314 2.686-6 6-6 .567 0 1.111.08 1.624.227C12.882.83 14.787 0 17 0c4.418 0 8 3.582 8 8 0 1.57-.455 3.017-1.233 4.184C24.545 13.017 25 14.43 25 16c0 4.418-3.582 8-8 8z"/></svg>
+
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- Pillar 1 -->
+      <div class="reveal card-hover glass border-emerald-100 rounded-[2.5rem] p-10 flex flex-col items-center text-center">
+        <div class="w-20 h-20 rounded-[2rem] bg-emerald-500/10 flex items-center justify-center mb-8 shadow-inner">
+          <svg class="w-10 h-10 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
+        </div>
+        <h3 class="font-900 text-slate-800 text-2xl mb-4">Holistic Development</h3>
+        <p class="text-slate-500 leading-relaxed font-600">Nurturing social, emotional, and cognitive growth through evidence-based milestones.</p>
+      </div>
+
+      <!-- Pillar 2 -->
+      <div class="reveal card-hover glass border-purple-100 rounded-[2.5rem] p-10 flex flex-col items-center text-center">
+        <div class="w-20 h-20 rounded-[2rem] bg-purple-500/10 flex items-center justify-center mb-8 shadow-inner">
+          <svg class="w-10 h-10 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        </div>
+        <h3 class="font-900 text-slate-800 text-2xl mb-4">Governed Excellence</h3>
+        <p class="text-slate-500 leading-relaxed font-600">Professional administrative oversight and transparent board leadership you can trust.</p>
+      </div>
+
+      <!-- Pillar 3 -->
+      <div class="reveal card-hover glass border-blue-100 rounded-[2.5rem] p-10 flex flex-col items-center text-center">
+        <div class="w-20 h-20 rounded-[2rem] bg-blue-500/10 flex items-center justify-center mb-8 shadow-inner">
+          <svg class="w-10 h-10 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h6v9"/><circle cx="12" cy="8" r="1.5" fill="currentColor" stroke="none"/></svg>
+        </div>
+        <h3 class="font-900 text-slate-800 text-2xl mb-4">Enriched Environment</h3>
+        <p class="text-slate-500 leading-relaxed font-600">A secure, world-class space tailored specifically for childhood exploration.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ ABOUT US ══════════════════ -->
+<section id="about" class="relative py-32 overflow-hidden watercolor-emerald" style="background: linear-gradient(160deg, #f0fdf4 0%, #ffffff 100%);">
+  
+  <div class="blob-bg" aria-hidden="true">
+    <div class="blob w-[600px] h-[600px] bg-emerald-100/60 top-[-300px] right-[-100px]"></div>
+    <div class="blob w-[400px] h-[400px] bg-green-50 bottom-[-200px] left-[-100px]"></div>
+  </div>
+
+  <!-- Decorative squiggles -->
+  <svg class="absolute top-20 left-10 w-40 opacity-[0.08] text-emerald-900" viewBox="0 0 200 100" fill="none" stroke="currentColor" stroke-width="4"><path d="M10 80 Q 50 10, 100 80 T 190 80" stroke-linecap="round"/></svg>
+  <svg class="absolute bottom-40 right-20 w-60 opacity-[0.05] text-emerald-900 rotate-12" viewBox="0 0 200 100" fill="none" stroke="currentColor" stroke-width="4"><path d="M10 80 Q 50 10, 100 80 T 190 80" stroke-linecap="round"/></svg>
+
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <div class="grid lg:grid-cols-2 gap-20 items-center">
+
+      <!-- Artistic Image Frame -->
+      <div class="relative reveal">
+        <div class="relative z-20 group">
+          <div class="relative rounded-[3rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(6,78,59,0.2)] aspect-[4/5] sm:aspect-square max-w-lg mx-auto img-zoom border-8 border-white/50">
+            <img src="images/photo1.jpeg"
+                 alt="Mpudule Early Learning Centre children on an outing" class="w-full h-full object-cover"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          </div>
+          
+          <!-- Floating Badge -->
+          <div class="absolute -bottom-8 -left-8 glass rounded-[2rem] p-6 shadow-2xl max-w-[220px] animate-bounce-slow">
+            <div class="flex items-center gap-4 mb-3">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+              </div>
+              <span class="font-900 text-slate-800 text-sm">Top-Tier<br/>Education</span>
+            </div>
+            <p class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Soweto's Pride</p>
+          </div>
+        </div>
+
+        <!-- Background deco shapes -->
+        <div class="absolute -top-10 -right-10 w-40 h-40 bg-emerald-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
+        <div class="absolute -bottom-10 -left-10 w-56 h-56 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style="animation-delay: 1s"></div>
+      </div>
+
+      <div class="reveal">
+        <span class="tag-pill bg-emerald-100 text-emerald-700 mb-6">Our Legacy & Philosophy</span>
+        <h2 class="text-4xl sm:text-5xl md:text-6xl font-black text-slate-900 mb-8 leading-[1.1] tracking-tight">
+          Cultivating a Lifelong<br/><span class="grad-text">Passion for Discovery</span>
+        </h2>
+        <p class="text-xl text-slate-600 mb-10 leading-relaxed font-500">
+          At Mpudule Early Learning Centre, we believe childhood is a foundation for life. Our progressive curriculum blends <span class="font-900 text-emerald-600">play-based exploration</span> with structured cognitive milestones, ensuring a thriving community for every child.
+        </p>
+
+        <div class="space-y-6">
+          <div class="flex items-center gap-5 group">
+            <div class="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="font-800 text-lg text-slate-800">Progressive cognitive curriculum</div>
+          </div>
+          <div class="flex items-center gap-5 group">
+            <div class="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="font-800 text-lg text-slate-800">Community-rooted support system</div>
+          </div>
+          <div class="flex items-center gap-5 group">
+            <div class="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="font-800 text-lg text-slate-800">Holistic social-emotional learning</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="zigzag"></div>
+
+<!-- ══════════════════ GOVERNANCE ══════════════════ -->
+<section id="governance" class="py-32 bg-white relative overflow-hidden art-pattern">
+  <div class="sprinkles"></div>
+  <div class="absolute inset-0 pointer-events-none">
+    <svg class="absolute top-0 right-0 w-1/2 h-full text-emerald-50/50" viewBox="0 0 400 400" fill="none"><circle cx="400" cy="0" r="400" stroke="currentColor" stroke-width="2"/></svg>
+    <svg class="absolute bottom-0 left-0 w-1/3 h-1/2 text-blue-50/50" viewBox="0 0 400 400" fill="none"><circle cx="0" cy="400" r="300" stroke="currentColor" stroke-width="2"/></svg>
+    
+    <!-- Abstract governance shapes -->
+    <rect x="10%" y="20%" width="40" height="40" rx="8" class="text-emerald-100 fill-current opacity-20 rotate-12"/>
+    <rect x="85%" y="70%" width="60" height="60" rx="12" class="text-blue-100 fill-current opacity-20 -rotate-12"/>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <div class="text-center mb-20 reveal">
+      <span class="tag-pill bg-blue-100 text-blue-700 mb-6">Transparency & Standards</span>
+      <h2 class="text-4xl sm:text-5xl font-black text-slate-900 mb-6">
+        Professional Governance &<br/><span class="grad-text">Accountability</span>
+      </h2>
+      <p class="text-lg text-slate-500 max-w-2xl mx-auto font-600">
+        Mpudule operates under strict municipal frameworks in the City of Johannesburg, ensuring top-tier institutional standards.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8 mb-20">
+      <div class="reveal card-hover bg-white rounded-[2.5rem] p-10 shadow-xl shadow-slate-200/50 border border-slate-100">
+        <div class="w-16 h-16 bg-emerald-600 rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-emerald-600/20">
+          <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 11 17 15 13"/></svg>
+        </div>
+        <h3 class="font-900 text-xl text-slate-800 mb-4">SLA Compliance</h3>
+        <p class="text-slate-500 text-sm font-600">Aligned with strict Service Level Agreements and municipal frameworks of Johannesburg.</p>
+      </div>
+
+      <div class="reveal card-hover bg-white rounded-[2.5rem] p-10 shadow-xl shadow-slate-200/50 border border-slate-100">
+        <div class="w-16 h-16 bg-purple-600 rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-purple-600/20">
+          <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><polyline points="9 11 11 13 15 9"/></svg>
+        </div>
+        <h3 class="font-900 text-xl text-slate-800 mb-4">Admin Excellence</h3>
+        <p class="text-slate-500 text-sm font-600">Meticulous administrative systems and compliance logs maintained daily for quality assurance.</p>
+      </div>
+
+      <div class="reveal card-hover bg-white rounded-[2.5rem] p-10 shadow-xl shadow-slate-200/50 border border-slate-100">
+        <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-blue-600/20">
+          <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3 class="font-900 text-xl text-slate-800 mb-4">Governing Board</h3>
+        <p class="text-slate-500 text-sm font-600">Our dedicated board provides oversight that directly empowers the children we serve.</p>
+      </div>
+    </div>
+
+    <!-- Documents Link Art -->
+    <div class="reveal bg-gradient-to-br from-emerald-900 to-green-900 rounded-[3rem] p-12 text-white relative overflow-hidden shadow-2xl">
+      <!-- Background pattern for the card -->
+      <div class="absolute inset-0 opacity-10 pointer-events-none hero-pattern"></div>
+      
+      <div class="relative z-10 grid lg:grid-cols-2 gap-10 items-center">
+        <div>
+          <h3 class="text-3xl font-900 mb-4">Official Documentation</h3>
+          <p class="text-emerald-100/70 mb-8 font-600">Access our public guidelines and institutional standards. Transparency is our commitment to your child's future.</p>
+          <div class="flex flex-wrap gap-4">
+            <a href="#" class="px-6 py-3 rounded-2xl bg-white/10 border border-white/20 hover:bg-white hover:text-emerald-900 transition-all font-800 text-sm flex items-center gap-3">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Code of Conduct
+            </a>
+            <a href="#" class="px-6 py-3 rounded-2xl bg-white/10 border border-white/20 hover:bg-white hover:text-emerald-900 transition-all font-800 text-sm flex items-center gap-3">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Health Protocols
+            </a>
+          </div>
+        </div>
+        <div class="hidden lg:block relative">
+          <svg class="w-full h-48 opacity-20 text-white" viewBox="0 0 200 200" fill="currentColor">
+            <path d="M40 40h120v120H40z M60 70h80v10H60z M60 100h80v10H60z M60 130h50v10H60z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ PROGRAMS ══════════════════ -->
+<section id="programs" class="py-32 relative overflow-hidden bg-white doodle-bg">
+  
+  <!-- Artistic background elements -->
+  <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
+    <div class="absolute top-1/4 -left-20 w-80 h-80 bg-emerald-50/50 rounded-full filter blur-[100px] opacity-80"></div>
+    <div class="absolute bottom-1/4 -right-20 w-80 h-80 bg-blue-50/50 rounded-full filter blur-[100px] opacity-80"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-[0.03]" style="background-image: radial-gradient(#10b981 1.5px, transparent 1.5px); background-size: 40px 40px;"></div>
+    
+    <!-- Floating hand-drawn like art -->
+    <svg class="absolute top-[10%] right-[10%] w-24 h-24 text-emerald-200/40" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2"><circle cx="50" cy="50" r="40" stroke-dasharray="6 6"/><path d="M30 50 L70 50 M50 30 L50 70" stroke-linecap="round"/></svg>
+    <svg class="absolute bottom-[10%] left-[5%] w-32 h-32 text-purple-200/30 rotate-45" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2"><rect x="20" y="20" width="60" height="60" rx="10"/><path d="M40 40 L60 60 M60 40 L40 60" stroke-linecap="round"/></svg>
+    
+    <!-- ABC float watermarks -->
+    <div class="absolute top-20 right-20 text-9xl font-black text-slate-100/50 select-none tracking-tighter">ABC</div>
+    <div class="absolute bottom-20 left-20 text-9xl font-black text-slate-100/50 select-none tracking-tighter">123</div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <div class="text-center mb-20 reveal">
+      <span class="tag-pill bg-emerald-100 text-emerald-700 mb-6">Learning Programs</span>
+      <h2 class="text-4xl sm:text-5xl font-black text-slate-900 mb-6">
+        Tailored Learning <span class="grad-text">Brackets</span>
+      </h2>
+      <p class="text-lg text-slate-500 max-w-xl mx-auto font-600">
+        Expertly designed curricula that nurture each child's natural curiosity and developmental stage.
+      </p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-10">
+      <!-- Toddler -->
+      <div class="reveal card-hover bg-white rounded-[3rem] overflow-hidden shadow-2xl shadow-emerald-900/5 border border-emerald-50 flex flex-col h-full">
+        <div class="h-64 relative overflow-hidden group img-zoom">
+          <img src="images/photo2.jpeg"
+               alt="Toddler play" class="w-full h-full object-cover"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/50 to-transparent"></div>
+          <div class="absolute top-6 left-6">
+            <span class="bg-white/95 backdrop-blur-md text-emerald-800 font-900 text-[10px] px-4 py-2 rounded-2xl shadow-xl uppercase tracking-widest">Ages 1–3</span>
+          </div>
+        </div>
+        <div class="p-10 flex-1 flex flex-col">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center mb-8 shadow-inner text-emerald-600">
+            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M12 12c-4 0-7 2-7 4v1h14v-1c0-2-3-4-7-4z"/><path d="M8 8s0-3 4-3 4 3 4 3"/></svg>
+          </div>
+          <h3 class="font-900 text-2xl text-slate-800 mb-6">Toddler Phase</h3>
+          <ul class="space-y-4 mb-8 flex-1">
+            <li class="flex items-center gap-3 text-slate-500 font-700 text-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Sensory exploration
+            </li>
+            <li class="flex items-center gap-3 text-slate-500 font-700 text-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Speech development
+            </li>
+            <li class="flex items-center gap-3 text-slate-500 font-700 text-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Motor skill refinement
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Pre-School -->
+      <div class="reveal card-hover bg-white rounded-[3rem] overflow-hidden shadow-2xl shadow-emerald-900/5 border border-emerald-50 flex flex-col h-full lg:-translate-y-6">
+        <div class="h-64 relative overflow-hidden group img-zoom">
+          <img src="images/photo3.jpeg"
+               alt="Pre-school learning" class="w-full h-full object-cover"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/50 to-transparent"></div>
+          <div class="absolute top-6 left-6">
+            <span class="bg-white/95 backdrop-blur-md text-emerald-800 font-900 text-[10px] px-4 py-2 rounded-2xl shadow-xl uppercase tracking-widest">Ages 3–5</span>
+          </div>
+          <div class="absolute top-6 right-6">
+            <span class="bg-emerald-600 text-white font-900 text-[9px] px-4 py-2 rounded-2xl shadow-xl uppercase tracking-widest">Most Enrolled</span>
+          </div>
+        </div>
+        <div class="p-10 flex-1 flex flex-col">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center mb-8 shadow-inner text-emerald-600">
+            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <h3 class="font-900 text-2xl text-slate-800 mb-6">Pre-School Phase</h3>
+          <ul class="space-y-4 mb-8 flex-1">
+            <li class="flex items-center gap-3 text-slate-500 font-700 text-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Early literacy & numeracy
+            </li>
+            <li class="flex items-center gap-3 text-slate-500 font-700 text-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Creative arts immersion
+            </li>
+            <li class="flex items-center gap-3 text-slate-500 font-700 text-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Structured routine play
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Grade R -->
+      <div class="reveal card-hover bg-white rounded-[3rem] overflow-hidden shadow-2xl shadow-emerald-900/5 border border-emerald-50 flex flex-col h-full">
+        <div class="h-64 relative overflow-hidden group img-zoom">
+          <img src="images/photo4.jpeg"
+               alt="Grade R arts" class="w-full h-full object-cover"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/50 to-transparent"></div>
+          <div class="absolute top-6 left-6">
+            <span class="bg-white/90 backdrop-blur-md text-emerald-800 font-900 text-[10px] px-4 py-2 rounded-2xl shadow-xl uppercase tracking-widest">Ages 5–6</span>
+          </div>
+        </div>
+        <div class="p-10 flex-1 flex flex-col">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center mb-8 shadow-inner text-emerald-600">
+            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          </div>
+          <h3 class="font-900 text-2xl text-slate-800 mb-6">Grade R</h3>
+          <ul class="space-y-4 mb-8 flex-1">
+            <li class="flex items-center gap-3 text-slate-500 font-700 text-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span> School-readiness prep
+            </li>
+            <li class="flex items-center gap-3 text-slate-500 font-700 text-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Foundational milestones
+            </li>
+            <li class="flex items-center gap-3 text-slate-500 font-700 text-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Advanced interaction
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline art -->
+    <div class="reveal mt-24 glass rounded-[3rem] p-12 max-w-4xl mx-auto shadow-2xl relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16"></div>
+      <h3 class="text-center font-900 text-slate-800 mb-12 uppercase tracking-widest text-xs">The Developmental Journey</h3>
+      <div class="flex items-center justify-between relative px-4">
+        <div class="absolute top-5 left-10 right-10 h-0.5 bg-slate-100"></div>
+        <div class="absolute top-5 left-10 right-10 h-0.5 bg-gradient-to-r from-emerald-400 to-blue-400 scale-x-100 origin-left"></div>
+        
+        <div class="z-10 text-center">
+          <div class="w-12 h-12 rounded-full bg-emerald-500 border-4 border-white shadow-xl pulse-dot mx-auto flex items-center justify-center text-white font-900 text-sm">1</div>
+          <div class="mt-4 font-900 text-slate-800 text-xs">Toddler</div>
+        </div>
+        <div class="z-10 text-center">
+          <div class="w-12 h-12 rounded-full bg-blue-500 border-4 border-white shadow-xl pulse-dot mx-auto flex items-center justify-center text-white font-900 text-sm" style="animation-delay: .5s">3</div>
+          <div class="mt-4 font-900 text-slate-800 text-xs">Pre-School</div>
+        </div>
+        <div class="z-10 text-center">
+          <div class="w-12 h-12 rounded-full bg-teal-500 border-4 border-white shadow-xl pulse-dot mx-auto flex items-center justify-center text-white font-900 text-sm" style="animation-delay: 1s">R</div>
+          <div class="mt-4 font-900 text-slate-800 text-xs">Grade R</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ ADMISSIONS ══════════════════ -->
+<section id="admissions" class="py-32 bg-slate-900 relative overflow-hidden">
+  
+  <div class="blob-bg opacity-30">
+    <div class="blob w-[500px] h-[500px] bg-emerald-600 top-[-200px] left-[-100px]"></div>
+    <div class="blob w-[600px] h-[600px] bg-blue-800 bottom-[-300px] right-[-100px]"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <div class="grid lg:grid-cols-2 gap-20 items-center">
+      <div class="reveal">
+        <span class="tag-pill bg-emerald-500/20 text-emerald-400 mb-6">Enrollment Process</span>
+        <h2 class="text-4xl sm:text-5xl font-black text-white mb-8 leading-tight">
+          Join the <span class="text-emerald-400">Mpudule Family</span> Today
+        </h2>
+        <p class="text-emerald-100/60 text-xl mb-12 font-500">We make enrollment simple and supportive for all local families in Soweto.</p>
+        
+        <div class="space-y-8">
+          <div class="flex gap-6 items-start reveal" style="transition-delay: .1s">
+            <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-emerald-400 font-900 shrink-0 border border-white/10">1</div>
+            <div>
+              <h4 class="text-white font-900 text-lg mb-2">Checklist Review</h4>
+              <p class="text-white/40 text-sm">Gather all essential documents before visiting our administrative office.</p>
+            </div>
+          </div>
+          <div class="flex gap-6 items-start reveal" style="transition-delay: .2s">
+            <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-emerald-400 font-900 shrink-0 border border-white/10">2</div>
+            <div>
+              <h4 class="text-white font-900 text-lg mb-2">Submission</h4>
+              <p class="text-white/40 text-sm">Submit certified copies of all files to our office for processing.</p>
+            </div>
+          </div>
+          <div class="flex gap-6 items-start reveal" style="transition-delay: .3s">
+            <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-emerald-400 font-900 shrink-0 border border-white/10">3</div>
+            <div>
+              <h4 class="text-white font-900 text-lg mb-2">Welcome!</h4>
+              <p class="text-white/40 text-sm">Once verified, your child is officially part of our learning community.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <div class="glass-dark rounded-[3rem] p-10 border-white/10 relative shadow-2xl">
+          <div class="flex items-center gap-5 mb-10">
+            <div class="w-16 h-16 rounded-[1.5rem] bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/40">
+              <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg>
+            </div>
+            <div>
+              <h3 class="text-2xl font-900 text-white">Requirement Checklist</h3>
+              <p class="text-emerald-100/40 text-xs font-800 uppercase tracking-widest mt-1">Submission checklist</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <label class="flex items-start gap-4 p-5 rounded-3xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all cursor-pointer group">
+              <input type="checkbox" class="mt-1 w-6 h-6 rounded-lg accent-emerald-500 shrink-0"/>
+              <div>
+                <span class="text-white font-800 text-sm block">Certified Birth Certificate</span>
+                <span class="text-white/30 text-xs font-600">Must be a recent certified copy</span>
+              </div>
+            </label>
+            <label class="flex items-start gap-4 p-5 rounded-3xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all cursor-pointer group">
+              <input type="checkbox" class="mt-1 w-6 h-6 rounded-lg accent-emerald-500 shrink-0"/>
+              <div>
+                <span class="text-white font-800 text-sm block">Parent/Guardian IDs</span>
+                <span class="text-white/30 text-xs font-600">Certified copies of both guardians</span>
+              </div>
+            </label>
+            <label class="flex items-start gap-4 p-5 rounded-3xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all cursor-pointer group">
+              <input type="checkbox" class="mt-1 w-6 h-6 rounded-lg accent-emerald-500 shrink-0"/>
+              <div>
+                <span class="text-white font-800 text-sm block">Immunization Card</span>
+                <span class="text-white/30 text-xs font-600">Updated clinic records required</span>
+              </div>
+            </label>
+            <label class="flex items-start gap-4 p-5 rounded-3xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all cursor-pointer group">
+              <input type="checkbox" class="mt-1 w-6 h-6 rounded-lg accent-emerald-500 shrink-0"/>
+              <div>
+                <span class="text-white font-800 text-sm block">Proof of Residence</span>
+                <span class="text-white/30 text-xs font-600">Utility bill (not older than 3 months)</span>
+              </div>
+            </label>
+          </div>
+
+          <div id="checklistMsg" class="hidden mt-8 p-5 bg-emerald-500/20 border border-emerald-500/40 rounded-3xl text-emerald-300 text-center font-900 text-sm">
+            ✨ Excellent! You have all documents ready.
+          </div>
+
+          <a href="#contact" class="mt-8 w-full py-5 rounded-[2rem] bg-emerald-500 text-white font-900 text-lg shadow-xl shadow-emerald-500/30 hover:bg-emerald-400 hover:scale-[1.02] transition-all flex items-center justify-center gap-3">
+            Contact to Register
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ CONTACT ══════════════════ -->
+<section id="contact" class="py-32 relative overflow-hidden bg-white art-pattern">
+  <div class="sprinkles"></div>
+  <!-- Soft background art -->
+  <div class="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-emerald-50 rounded-full filter blur-[100px] opacity-40"></div>
+  <div class="absolute bottom-[-10%] left-[-5%] w-[300px] h-[300px] bg-blue-50 rounded-full filter blur-[100px] opacity-40"></div>
+
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <div class="grid lg:grid-cols-5 gap-20 items-start">
+      <div class="lg:col-span-2 reveal">
+        <span class="tag-pill bg-emerald-100 text-emerald-700 mb-6">Contact Us</span>
+        <h2 class="text-4xl sm:text-5xl font-black text-slate-900 mb-8 leading-tight">
+          We're here to <span class="grad-text">Help</span>
+        </h2>
+        
+        <div class="space-y-6 mt-12">
+          <div class="flex items-center gap-6 p-8 rounded-[2.5rem] bg-slate-50 border border-slate-100 group hover:border-emerald-200 transition-all">
+            <div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shrink-0 shadow-sm text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-all">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <h4 class="font-900 text-slate-800 text-sm mb-1">Physical Address</h4>
+              <p class="text-slate-500 font-600 text-sm">Soweto, City of Johannesburg</p>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-6 p-8 rounded-[2.5rem] bg-slate-50 border border-slate-100 group hover:border-emerald-200 transition-all">
+            <div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shrink-0 shadow-sm text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-all">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div>
+              <h4 class="font-900 text-slate-800 text-sm mb-1">Operating Hours</h4>
+              <p class="text-slate-500 font-600 text-sm">Mon–Fri: 07:00 AM – 17:00 PM</p>
+              <span id="openStatus" class="inline-block mt-1 text-[10px] font-900 uppercase tracking-widest text-emerald-500">Currently Open</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-3 reveal">
+        <div class="bg-white rounded-[3rem] p-10 sm:p-12 shadow-2xl shadow-emerald-900/10 border border-emerald-50">
+          <form id="contactForm" class="space-y-6">
+            <div class="grid sm:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label class="text-xs font-900 text-slate-400 uppercase tracking-widest ml-1">Guardian Name</label>
+                <input type="text" name="name" placeholder="John Doe" class="form-input w-full p-5 rounded-2xl bg-slate-50 border-slate-100 text-sm font-700" required/>
+              </div>
+              <div class="space-y-2">
+                <label class="text-xs font-900 text-slate-400 uppercase tracking-widest ml-1">Child's Age</label>
+                <select name="age" class="form-input w-full p-5 rounded-2xl bg-slate-50 border-slate-100 text-sm font-700" required>
+                  <option value="">Select Age</option>
+                  <option>1-3 Years</option>
+                  <option>3-5 Years</option>
+                  <option>5-6 Years</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label class="text-xs font-900 text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
+                <input type="email" name="email" placeholder="john@example.com" class="form-input w-full p-5 rounded-2xl bg-slate-50 border-slate-100 text-sm font-700" required/>
+              </div>
+              <div class="space-y-2">
+                <label class="text-xs font-900 text-slate-400 uppercase tracking-widest ml-1">Phone Number</label>
+                <input type="tel" name="phone" placeholder="011 000 0000" class="form-input w-full p-5 rounded-2xl bg-slate-50 border-slate-100 text-sm font-700" required/>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <label class="text-xs font-900 text-slate-400 uppercase tracking-widest ml-1">Your Message</label>
+              <textarea name="message" rows="5" placeholder="How can we help you?" class="form-input w-full p-5 rounded-2xl bg-slate-50 border-slate-100 text-sm font-700 resize-none" required></textarea>
+            </div>
+            <button type="submit" class="w-full py-5 rounded-[2rem] bg-emerald-600 text-white font-900 text-lg shadow-xl shadow-emerald-600/20 hover:bg-emerald-500 hover:-translate-y-1 transition-all">
+              <span id="btnText">Send Message</span>
+              <svg id="btnSpinner" class="hidden w-6 h-6 animate-spin mx-auto" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="white" stroke-width="4"/><path class="opacity-75" fill="white" d="M4 12a8 8 0 018-8v8H4z"/></svg>
+            </button>
+          </form>
+          
+          <div id="successMsg" class="hidden text-center py-10">
+            <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg class="w-10 h-10 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <h4 class="text-2xl font-900 text-slate-900 mb-2">Message Sent!</h4>
+            <p class="text-slate-500 font-600">We'll get back to you shortly.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ FOOTER ══════════════════ -->
+<footer class="bg-slate-950 text-white py-20 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid md:grid-cols-4 gap-12 mb-16">
+      <div class="col-span-2">
+        <div class="flex items-center gap-4 mb-8">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-500 flex items-center justify-center">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 3L14.5 8.5L20.5 9.3L16.3 13.4L17.3 19.4L12 16.6L6.7 19.4L7.7 13.4L3.5 9.3L9.5 8.5L12 3Z" fill="white" stroke="white" stroke-width="0.5" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <span class="font-black text-white text-2xl block tracking-tight">Mpudule</span>
+            <span class="text-[11px] text-emerald-400 font-900 uppercase tracking-widest">Early Learning Centre</span>
+          </div>
+        </div>
+        <p class="text-slate-400 text-lg leading-relaxed max-w-md">
+          Providing world-class early childhood development in Soweto. Building the future, one mind at a time.
+        </p>
+      </div>
+
+      <div>
+        <h4 class="text-white font-900 uppercase tracking-widest text-xs mb-8">Explore</h4>
+        <ul class="space-y-4">
+          <li><a href="#about" class="text-slate-500 hover:text-emerald-400 transition-colors font-700">About Our Centre</a></li>
+          <li><a href="#programs" class="text-slate-500 hover:text-emerald-400 transition-colors font-700">Learning Programs</a></li>
+          <li><a href="#admissions" class="text-slate-500 hover:text-emerald-400 transition-colors font-700">Enrollment</a></li>
+          <li><a href="#governance" class="text-slate-500 hover:text-emerald-400 transition-colors font-700">Governance</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-white font-900 uppercase tracking-widest text-xs mb-8">Connect</h4>
+        <div class="flex items-center gap-4 mb-6">
+          <svg class="w-5 h-5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.22A2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6 6l1.27-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span class="text-slate-400 font-700 text-sm">Contact Soweto Branch</span>
+        </div>
+        <div class="inline-flex items-center gap-3 px-6 py-2.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-900 uppercase tracking-widest">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Accepting Intake
+        </div>
+      </div>
+    </div>
+    
+    <div class="pt-10 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-6">
+      <p class="text-slate-600 text-sm font-700">© 2026 Mpudule Early Learning Centre. Professional Governance Standards.</p>
+      <div class="flex gap-8">
+        <a href="#" class="text-slate-600 hover:text-white transition-all text-xs font-800">Privacy Policy</a>
+        <a href="#" class="text-slate-600 hover:text-white transition-all text-xs font-800">Compliance</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<button id="scrollTop" class="hidden-btn fixed bottom-8 right-8 z-50 w-16 h-16 rounded-[1.5rem] bg-emerald-600 text-white shadow-2xl flex items-center justify-center hover:bg-emerald-500 hover:-translate-y-2 transition-all">
+  <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const d = document.documentElement;
+    const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+    document.getElementById('progress').style.width = pct + '%';
+    
+    const scrollBtn = document.getElementById('scrollTop');
+    scrollBtn.classList.toggle('hidden-btn', window.scrollY <= 500);
+    
+    const navbar = document.getElementById('navbar');
+    if(window.scrollY > 50) {
+      navbar.classList.add('h-16', 'bg-white/95', 'shadow-lg');
+      navbar.classList.remove('h-20');
+    } else {
+      navbar.classList.remove('h-16', 'bg-white/95', 'shadow-lg');
+      navbar.classList.add('h-20');
+    }
+  });
+
+  document.getElementById('scrollTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const iconOpen = document.getElementById('iconOpen');
+  const iconClose = document.getElementById('iconClose');
+  let menuOpen = false;
+
+  hamburger.addEventListener('click', () => {
+    menuOpen = !menuOpen;
+    mobileMenu.style.maxHeight = menuOpen ? '500px' : '0';
+    mobileMenu.style.opacity = menuOpen ? '1' : '0';
+    iconOpen.classList.toggle('hidden', menuOpen);
+    iconClose.classList.toggle('hidden', !menuOpen);
+  });
+
+  document.querySelectorAll('.mob-link').forEach(link => {
+    link.addEventListener('click', () => {
+      menuOpen = false;
+      mobileMenu.style.maxHeight = '0';
+      mobileMenu.style.opacity = '0';
+      iconOpen.classList.remove('hidden');
+      iconClose.classList.add('hidden');
+    });
+  });
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 150) current = s.id; });
+    navLinks.forEach(a => {
+      a.classList.remove('text-emerald-600', 'bg-emerald-50/50');
+      if (a.getAttribute('href') === '#' + current) a.classList.add('text-emerald-600', 'bg-emerald-50/50');
+    });
+  });
+
+  const checkboxes = document.querySelectorAll('#admissions input[type=checkbox]');
+  const checklistMsg = document.getElementById('checklistMsg');
+  checkboxes.forEach(cb => cb.addEventListener('change', () => {
+    const allChecked = [...checkboxes].every(c => c.checked);
+    checklistMsg.classList.toggle('hidden', !allChecked);
+  }));
+
+  const statusEl = document.getElementById('openStatus');
+  const now = new Date(), day = now.getDay(), hr = now.getHours();
+  if(statusEl) statusEl.textContent = (day >= 1 && day <= 5 && hr >= 7 && hr < 17) ? 'Currently Open' : 'Currently Closed';
+
+  const form = document.getElementById('contactForm');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
+    btnText.classList.add('hidden');
+    btnSpinner.classList.remove('hidden');
+    setTimeout(() => {
+      form.classList.add('hidden');
+      document.getElementById('successMsg').classList.remove('hidden');
+    }, 2000);
+  });
+</script>
+</body>
+</html>
